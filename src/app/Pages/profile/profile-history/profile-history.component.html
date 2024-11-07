@@ -1,0 +1,261 @@
+<div class="cps-order-page">
+    <div class="cps-order-mobile">
+        <div class="block-welcome-containter is-flex is-align-items-center">
+            <div class="welcome-avatar"><img src="assets/Profile/Shipper_CPS3.77d4065.png" alt="cps-icon"></div>
+            <div class="welcome-smember is-flex is-flex-direction-column"><!---->
+                <p class="welcome-smember__name">{{name}}</p>
+            </div>
+        </div>
+        <div class="bg-smember-fa"></div>
+        <div class="block-homepage-menu">
+            <div class="block-homepage-menu__content is-flex is-justify-content-space-around">
+                <div class="content__item is-flex is-flex-direction-column is-align-items-center">
+                    <p class="item__content title">{{chitietList?.totalItems }}</p>
+                    <p class="item__content text">Đơn hàng</p>
+                </div>
+                <div class="content__item is-flex is-flex-direction-column is-align-items-center">
+                    <p class="item__content title">
+                        {{ totalAmount | number}}</p>
+                    <p class="item__content text">Tổng tiền tích luỹ</p>
+                </div>
+            </div>
+        </div>
+        <div class="cps-container">
+            <div class="block-order">
+                <div class="block-sliding-order">
+                    <div class="order-container gallery-thumbs">
+                        <div class="thumbs-wrapper is-flex">
+                            <div class="thumb-item" [ngClass]="{'swiper-slide-thumb-active': selectedStatus === null}"
+                                (click)="filterByStatus('tatca')">Tất cả
+                            </div>
+                            <div class="thumb-item" [ngClass]="{'swiper-slide-thumb-active': selectedStatus === 0}"
+                                (click)="filterByStatus(0)">Chờ xác nhận
+                            </div>
+                            <div class="thumb-item" [ngClass]="{'swiper-slide-thumb-active': selectedStatus === 1}"
+                                (click)="filterByStatus(1)">Đã xác nhận
+                            </div>
+                            <div class="thumb-item" [ngClass]="{'swiper-slide-thumb-active': selectedStatus === 2}"
+                                (click)="filterByStatus(2)">Đang vận chuyển
+                            </div>
+                            <div class="thumb-item" [ngClass]="{'swiper-slide-thumb-active': selectedStatus === 3}"
+                                (click)="filterByStatus(3)">Đã giao hàng
+                            </div>
+                            <div class="thumb-item" [ngClass]="{'swiper-slide-thumb-active': selectedStatus === 4}"
+                                (click)="filterByStatus(4)">Đã huỷ
+                            </div>
+                        </div>
+                    </div>
+                    <div id="listOrder" *ngIf="chitietList?.totalItems > 0" class="list-order-wrapper">
+                        <div class="block-order-list">
+                            <div class="block-order-item" *ngFor="let item of chitietList?.items">
+                                <div class="order-item is-flex" *ngFor="let sp of item.chiTiet">
+                                    <div class="order-item__img"><img src="{{baseUrl}}/Uploads/Products/{{sp.anhSP}}"
+                                            alt="cps-product" loading="lazy"></div>
+                                    <div class="order-item__info is-flex is-flex-direction-column">
+                                        <div class="info__title button__order-detail">{{sp.tenSP}}
+                                        </div>
+                                        <div class="order-status wait" *ngIf="item.tinhTrang == 0">Chờ xác nhận</div>
+                                        <div class="order-status shipped" *ngIf="item.tinhTrang == 1">Đã xác nhận</div>
+                                        <div class="order-status shipped" *ngIf="item.tinhTrang == 2">Đang vận chuyển
+                                        </div>
+                                        <div class="order-status shipped" *ngIf="item.tinhTrang == 3">Đã giao hàng</div>
+                                        <div class="order-status cancel" *ngIf="item.tinhTrang == 4">Đã huỷ</div>
+                                        <div
+                                            class="info__group is-flex is-justify-content-space-between is-flex-direction-column">
+                                            <div class="price">{{sp.giaBan | number}}đ x {{sp.soLuong}}</div>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="info__group d-flex justify-content-end">
+                                    <div class="group-btn-info is-flex">
+                                        <div class="btn-info" *ngIf="item.tinhTrang == 0 || item.tinhTrang == 1"
+                                            (click)="huyHang(item.id)">Hủy hàng</div>
+                                        <div class="btn-info" (click)="showDetail(item)" data-bs-toggle="modal"
+                                            data-bs-target="#full-width-modal">
+                                            Xem chi tiết</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <nav aria-label="Page navigation mt-2">
+                            <ul class="pagination justify-content-center mt-2">
+                                <li class="page-item disabled" [class.disabled]="currentPage === 1"
+                                    (click)="onPreviousPage()">
+                                    <a class="page-link page-link-prev">
+                                        <i class="icon-long-arrow-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active" *ngFor="let page of getPageNumbers()"
+                                    style="cursor: pointer;" [ngClass]="{'active': currentPage === page}"
+                                    (click)="onPageChange(page)">
+                                    <a class="page-link">{{ page }}</a>
+                                </li>
+                                <li class="page-item" (click)="onNextPage()">
+                                    <a class="page-link page-link-next">
+                                        <i class="icon-long-arrow-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div id="listOrder" *ngIf="chitietList?.totalItems == 0" class="list-order-wrapper">
+                        <div class="no-order mt-6">
+                            <div class="no-info is-flex is-flex-direction-column is-align-items-center"><img
+                                    src="assets/Profile/none_order.svg">
+                                <p>Không có đơn hàng nào thỏa mãn!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-full-width" style="min-width: 1200px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="fullWidthModalLabel">Chi tiết đơn hàng</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card"
+                            style="box-shadow:  1px 2px 0 rgba(60,64,67,.1), 0 2px 6px 2px rgba(60,64,67,.15);">
+                            <div class="card-body">
+                                <div class="clearfix d-flex justify-content-center">
+                                    <div class="justify-content-start">
+                                        <img src="assets/logo/logo-dark-lg.png" alt="" style="height: 50px;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4 ">
+                                        <div class="mt-3">
+                                            <p class="font-16"><strong>Ngày đặt hàng:</strong>
+                                                <span class="font-16 mr-2">{{hoadonDetail?.createdAt | date:
+                                                    'dd/MM/yyyy'}}</span>
+                                            </p>
+                                            <p class="font-16"><strong>Tình trạng: </strong>
+                                                <span class="font-16 mr-2"
+                                                    [ngSwitch]="hoadonDetail?.trangThaiThanhToan">
+                                                    <ng-template [ngSwitchCase]="true">Đã thanh toán</ng-template>
+                                                    <ng-template [ngSwitchCase]="false">Chưa thanh
+                                                        toán</ng-template>
+                                                </span>
+                                            </p>
+                                            <p class="font-16"><strong>Phương thức thanh toán: </strong>
+                                                <span class="font-16 mr-2">{{hoadonDetail?.phuongThucGiaoDich}}</span>
+                                            </p>
+                                            <p class="font-16"><strong>Mã đơn hàng: </strong>
+                                                <span class="mr-2">#{{hoadonDetail?.id}}</span>
+                                            </p>
+                                        </div>
+                                    </div><!-- end col -->
+                                </div>
+                                <!-- end row -->
+
+                                <div class="row mt-4">
+                                    <div class="col-sm-4">
+                                        <h6 class="font-16">Người gửi</h6>
+                                        <address>
+                                            Cửa hàng TechStore<br>
+                                            391 Hàm Hy, Cộng Lạc<br>
+                                            Tứ Kỳ, Hải Dương<br>
+                                            <abbr>SĐT:</abbr> (+84) 796498503
+                                        </address>
+                                    </div> <!-- end col-->
+
+                                    <div class="col-sm-4">
+                                        <h6 class="font-16">Địa chỉ giao hàng</h6>
+                                        <address>
+                                            {{hoadonDetail?.hoTen}}<br>
+                                            {{hoadonDetail?.diaChi}}<br>
+                                            <abbr>Ghi chú: </abbr>{{hoadonDetail?.ghiChu}}<br>
+                                            <abbr>SĐT:</abbr> (+84) {{hoadonDetail?.soDienThoai}}
+                                        </address>
+                                    </div> <!-- end col-->
+
+                                    <div class="col-sm-4">
+
+                                    </div>
+                                </div>
+                                <!-- end row -->
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table mt-4">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th class="text-center">Sản phẩm</th>
+                                                        <th class="text-center">Số lượng</th>
+                                                        <th class="text-center">Đơn giá</th>
+                                                        <th class="text-end">Tổng</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let item of chiTietHoaDon; let i = index">
+                                                        <td>{{i+1}}</td>
+                                                        <td class="text-center">
+                                                            {{item.tenSP}}
+                                                        </td>
+                                                        <td class="text-center">{{item.soLuong}}</td>
+                                                        <td class="text-center">{{item.giaBan | number}}</td>
+                                                        <td class="text-end">{{item.thanhTien | number}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div> <!-- end table-responsive-->
+                                    </div> <!-- end col -->
+                                </div>
+                                <!-- end row -->
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="clearfix pt-3">
+                                            <h6 class="text-muted">Ghi chú:</h6>
+                                            <small>
+                                                Tất cả các tài khoản phải được thanh toán trong vòng 7 ngày kể từ ngày
+                                                nhận được hóa đơn. Được thanh toán bằng séc hoặc thẻ tín dụng hoặc thanh
+                                                toán trực tiếp trực tuyến. Nếu tài khoản không được thanh toán trong
+                                                vòng 7 ngày, các chi tiết tín dụng được cung cấp để xác nhận công việc
+                                                đã thực hiện sẽ bị tính phí trích dẫn đã thỏa thuận nêu trên.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 d-flex justify-content-end">
+                                        <div class=" mt-3 mt-sm-0">
+                                            <p><b>Tổng phụ:</b> <span
+                                                    class="d-flex justify-content-end">{{hoadonDetail?.tongTien |
+                                                    number}}</span></p>
+                                            <br>
+                                            <h3>{{hoadonDetail?.tongTien | number}} VNĐ</h3>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+
+                                <div class="d-print-none mt-4">
+                                    <div class="text-end">
+                                        <a href="javascript: void(0);" class="btn btn-light me-2"
+                                            data-bs-dismiss="modal">Hủy</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-toast></p-toast>
+<p-confirmDialog [style]="{ width: '450px', }"></p-confirmDialog>

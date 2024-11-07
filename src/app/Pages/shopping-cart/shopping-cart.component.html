@@ -1,0 +1,181 @@
+<div class="mb-1"></div>
+<div class="container-new">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container breadcrumb-container">
+            <div class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="['/']">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Giỏ hàng</li>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="cart">
+            <div class="container">
+                <div class="block-info mt-3" *ngIf="cartItems.length == 0">
+                    <div class="nothing-in-cart"><img src="assets/Profile/Cart-empty-v2.webp" alt="Giỏ hàng rỗng"> <span
+                            class="my-3">
+                            Giỏ hàng của bạn đang trống. <br>
+                            Hãy chọn thêm sản phẩm để mua sắm nhé
+                        </span></div>
+                </div>
+                <div class="row" *ngIf="cartItems.length > 0">
+                    <div class="col-lg-9">
+                        <table class="table table-cart table-mobile">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let item of cartItems">
+                                    <td class="product-col">
+                                        <div class="product">
+                                            <figure class="product-media">
+                                                <a [routerLink]="['/product-detail', item.id]">
+                                                    <img src="{{baseUrl}}/Uploads/Products/{{item.image}}"
+                                                        alt="Product image">
+                                                </a>
+                                            </figure>
+
+                                            <h3 class="product-title">
+                                                <a [routerLink]="['/product-detail']">{{item.tenSanPham}}</a>
+                                            </h3><!-- End .product-title -->
+                                        </div><!-- End .product -->
+                                    </td>
+                                    <td class="price-col">{{item.thanhTien | number}}</td>
+                                    <td class="quantity-col">
+                                        <div class="cart-product-quantity">
+                                            <div class="input-group  input-spinner">
+                                                <div class="input-group-prepend">
+                                                    <button style="min-width: 26px" (click)="decrementQuantity(item)"
+                                                        class="btn btn-decrement btn-spinner" type="button">
+                                                        <i class="icon-minus"></i>
+                                                    </button>
+                                                </div>
+                                                <input type="text" style="text-align: center" [name]="item.id"
+                                                    [(ngModel)]="item.soLuong" value="1" min="1" class="form-control "
+                                                    required="" placeholder="">
+                                                <div class="input-group-append">
+                                                    <button style="min-width: 26px" (click)="incrementQuantity(item)"
+                                                        class="btn btn-increment btn-spinner" type="button">
+                                                        <i class="icon-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="total-col">{{ calculateSubtotal(item) | number }}</td>
+                                    <td class="remove-col">
+                                        <button class="btn-remove" (click)="removeFromCart(item)">
+                                            <i class="icon-close"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table><!-- End .table table-wishlist -->
+
+                        <div class="cart-bottom" *ngIf="giamgia?.totalCount > 0">
+                            <div class="cart-discount">
+                                <div class="isures-sdc--wrap isures-sdc--not_single">
+                                    <div class="isures-sdc--list">
+                                        <div class="isures-sdc--label">Mã giảm giá của chúng tôi</div>
+                                        <div class="isures-sdc--list_item">
+                                            <div *ngFor="let item of giamgia?.items" class="isures-sdc--code_item"
+                                                (click)="toggleDropdown()">
+                                                <span>{{item.maCode}}</span>
+                                            </div>
+                                        </div>
+                                        <!-- dropdown coupon -->
+                                        <div class="isures-sdc--dropdown_list"
+                                            [style.display]="dropdownVisible ? 'block' : 'none'">
+                                            <div class="isures-sdc-list_header">
+                                                Mã giảm giá của chúng tôi
+                                                <a href="javascript:void(0)" class="isures-sdc--close_popup not-popup"
+                                                    (click)="toggleDropdown()">
+                                                    <img src="assets/discount/out.svg" width="15" height="15" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="isures-sdc--dropdown_inner">
+                                                <div class="isures-sdc--item" *ngFor="let item of giamgia?.items">
+                                                    <div class="isures-sdc--info_wrap">
+                                                        <div class="isures-sdc--content_wrap">
+                                                            <a href="javascript:void(0)"
+                                                                class="isures-view--details_conditions">
+                                                                <img src="assets/discount/warn.svg" width="5" height="5"
+                                                                    alt="">
+                                                            </a>
+
+                                                            <div class="isures-sdc--content_left">
+                                                                <span class="isures-sdc--content_name">
+                                                                    {{item.maCode}} </span>
+                                                                <span class="isures-sdc--content_excpt">
+                                                                    {{item.moTa}} </span>
+                                                            </div>
+                                                            <div class="isures-sdc--content_right">
+                                                                <span class="isures-sdc--content_expries">
+                                                                    Ngày hết hạn: {{item.hanSuDung | date:
+                                                                    'dd-MM-yyyy'}} </span>
+                                                                <a *ngIf="item.id != discount?.id || discount == undefined"
+                                                                    href="javascript:void(0)"
+                                                                    class="isures-sdc--apply_code"
+                                                                    (click)="setDiscount(item)">Áp dụng</a>
+                                                                <a *ngIf="item.id == discount?.id"
+                                                                    href="javascript:void(0)"
+                                                                    class="isures-sdc--apply_code"
+                                                                    (click)="clearDiscount()">Gỡ bỏ</a>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <aside class="col-lg-3">
+                        <div class="summary summary-cart">
+                            <h3 class="summary-title">Tổng giỏ hàng</h3>
+                            <table class="table table-summary">
+                                <tbody>
+                                    <tr class="summary-subtotal">
+                                        <td>Tổng phụ:</td>
+                                        <td>{{ totalPrice | number}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Giảm giá:</td>
+                                        <td *ngIf="discount?.soTienGiam">
+                                            {{ discount?.soTienGiam | number }}
+                                        </td>
+                                        <td *ngIf="!discount?.soTienGiam">
+                                            0
+                                        </td>
+                                    </tr>
+                                    <tr class="summary-total">
+                                        <td>Tổng cộng:</td>
+                                        <td>{{ totalPriceFinal | number}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <a [routerLink]="['/checkout']" class="btn btn-outline-primary-2 btn-order btn-block">TIẾN
+                                HÀNH
+                                THỦ TỤC THANH TOÁN</a>
+                        </div><!-- End .summary -->
+
+                        <a [routerLink]="['/']" class="btn btn-outline-dark-2 btn-block mb-3"><span>TIẾP TỤC MUA
+                                SẮM</span><i class="icon-refresh"></i></a>
+                    </aside><!-- End .col-lg-3 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .cart -->
+    </div>
+</div>

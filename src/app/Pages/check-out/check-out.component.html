@@ -1,0 +1,181 @@
+<div class="mb-1"></div>
+<div class="container-new">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container breadcrumb-container">
+            <div class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="['/']">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="checkout">
+            <div class="container">
+                <div class="checkout-discount" *ngIf="giamgia?.totalCount > 0">
+                    <div class="isures-sdc--wrap isures-sdc--not_single">
+                        <div class="isures-sdc--list">
+                            <div class="isures-sdc--label">Mã giảm giá của chúng tôi</div>
+                            <div class="isures-sdc--list_item">
+                                <div *ngFor="let item of giamgia?.items" class="isures-sdc--code_item"
+                                    (click)="toggleDropdown()">
+                                    <span>{{item.maCode}}</span>
+                                </div>
+                            </div>
+                            <!-- dropdown coupon -->
+                            <div class="isures-sdc--dropdown_list" [style.display]="dropdownVisible ? 'block' : 'none'">
+                                <div class="isures-sdc-list_header">
+                                    Mã giảm giá của chúng tôi
+                                    <a href="javascript:void(0)" class="isures-sdc--close_popup not-popup"
+                                        (click)="toggleDropdown()">
+                                        <img src="assets/discount/out.svg" width="15" height="15" alt="">
+                                    </a>
+                                </div>
+                                <div class="isures-sdc--dropdown_inner">
+                                    <div class="isures-sdc--item" *ngFor="let item of giamgia?.items">
+                                        <div class="isures-sdc--info_wrap">
+                                            <div class="isures-sdc--content_wrap">
+                                                <a href="javascript:void(0)" class="isures-view--details_conditions">
+                                                    <img src="assets/discount/warn.svg" width="5" height="5" alt="">
+                                                </a>
+
+                                                <div class="isures-sdc--content_left">
+                                                    <span class="isures-sdc--content_name">
+                                                        {{item.maCode}} </span>
+                                                    <span class="isures-sdc--content_excpt">
+                                                        {{item.moTa}} </span>
+                                                </div>
+                                                <div class="isures-sdc--content_right">
+                                                    <span class="isures-sdc--content_expries">
+                                                        Ngày hết hạn: {{item.hanSuDung | date:
+                                                        'dd-MM-yyyy'}} </span>
+                                                    <a *ngIf="item.id != discount?.id || discount == undefined"
+                                                        href="javascript:void(0)" class="isures-sdc--apply_code"
+                                                        (click)="setDiscount(item)">Áp dụng</a>
+                                                    <a *ngIf="item.id == discount?.id" href="javascript:void(0)"
+                                                        class="isures-sdc--apply_code" (click)="clearDiscount()">Gỡ
+                                                        bỏ</a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form action="#">
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <h2 class="checkout-title">Chi tiết thanh toán</h2>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label for="hoTen">Họ tên *</label>
+                                    <input type="text" [(ngModel)]="khachhang.hoTen" name="hoTen" class="form-control"
+                                        required>
+                                </div><!-- End .col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <label for="soDienThoai">Số điện thoại *</label>
+                                    <input type="number" [(ngModel)]="khachhang.soDienThoai" name="soDienThoai"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="diaChi">Địa chỉ *</label>
+                                <input type="text" [(ngModel)]="khachhang.diaChi" name="diaChi" class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ghiChu">Ghi chú đơn hàng (tùy chọn)</label>
+                                <textarea class="form-control" cols="30" rows="4" [(ngModel)]="hoadon.ghiChu"
+                                    name="ghiChu"
+                                    placeholder="Ghi chú về đơn đặt hàng của bạn, ví dụ: ghi chú đặc biệt khi giao hàng"></textarea>
+                            </div>
+                        </div>
+                        <aside class="col-lg-3">
+                            <div class="summary">
+                                <h3 class="summary-title">Đơn hàng của bạn</h3><!-- End .summary-title -->
+
+                                <table class="table table-summary">
+                                    <thead>
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th>Tổng</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of cartItems">
+                                            <td><a [routerLink]="['/product-detail', item.id]">{{item.tenSanPham}}<b>
+                                                        x{{item.soLuong}}</b></a></td>
+                                            <td>{{ calculateSubtotal(item) | number }}</td>
+                                        </tr>
+
+                                        <tr class="summary-subtotal">
+                                            <td>Tổng phụ:</td>
+                                            <td>{{ totalPrice | number }}</td>
+                                        </tr><!-- End .summary-subtotal -->
+                                        <tr>
+                                            <td>Vận chuyển:</td>
+                                            <td>Miễn phí vận chuyển</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Giảm giá:</td>
+                                            <td *ngIf="discount?.soTienGiam">
+                                                {{ discount?.soTienGiam | number }}
+                                            </td>
+                                            <td *ngIf="!discount?.soTienGiam">
+                                                0
+                                            </td>
+                                        </tr>
+                                        <tr class="summary-total">
+                                            <td>Tổng:</td>
+                                            <td>{{ totalPrice | number }}</td>
+                                        </tr><!-- End .summary-total -->
+                                    </tbody>
+                                </table><!-- End .table table-summary -->
+
+                                <div class="accordion-summary" id="accordion-payment">
+                                    <div class="card">
+                                        <div class="card-header" id="heading-1">
+                                            <h2 class="card-title input-radio">
+                                                <input type="radio" id="vnpay" name="paymentMethod"
+                                                    (change)="selectPaymentMethod('vnpay')"
+                                                    [checked]="selectedPaymentMethod === 'vnpay'">
+                                                <label style="font-size: 1.6rem;" class="ml-2" for="vnpay">Thanh toán
+                                                    qua ví VNPAY</label>
+                                            </h2>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-header" id="heading-3">
+                                            <h2 class="card-title input-radio">
+                                                <input type="radio" id="home" name="paymentMethod"
+                                                    (change)="selectPaymentMethod('cash')"
+                                                    [checked]="selectedPaymentMethod === 'cash'">
+                                                <label style="font-size: 1.6rem;" class="ml-2" for="home">Thanh toán khi
+                                                    nhận hàng</label>
+                                            </h2>
+                                        </div>
+                                    </div>
+
+                                </div><!-- End .accordion -->
+
+                                <button (click)="onSubmit()" type="submit"
+                                    class="btn btn-outline-primary-2 btn-order btn-block">
+                                    <span class="btn-text">Đặt hàng</span>
+                                    <span class="btn-hover-text">Tiến hành kiểm tra</span>
+                                </button>
+                            </div>
+                        </aside>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>

@@ -1,0 +1,221 @@
+<div class="mb-1"></div>
+<div class="container-new">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container breadcrumb-container">
+            <div class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="['/']">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a [routerLink]="['/blog', tinTuc?.danhMucId]">{{tinTuc?.tenDanhMuc}}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{tinTuc?.tieuDe}}</li>
+            </div>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <article class="entry single-entry">
+                        <figure class="entry-media" style="border-radius: 10px; height:350px">
+                            <img src="{{baseUrl}}/Uploads/News/{{tinTuc?.anhTinTuc}}" style="height: 350px !important;"
+                                alt="image desc" style="border-radius: 10px;">
+                        </figure><!-- End .entry-media -->
+
+                        <div class="entry-body">
+                            <div class="entry-meta">
+                                <span class="entry-author">
+                                    bởi <a href="javascript:void(0)">{{tinTuc?.tenUser}}</a>
+                                </span>
+                                <span class="meta-separator">|</span>
+                                <a href="javascript:void(0)">{{getTimeAgo(tinTuc?.createdAt)}}</a>
+                            </div><!-- End .entry-meta -->
+
+                            <h2 class="entry-title">
+                                {{tinTuc?.tieuDe}}
+                            </h2><!-- End .entry-title -->
+
+                            <div class="entry-cats">
+                                trong <a [routerLink]="['/blog', tinTuc?.danhMucId]">{{tinTuc?.tenDanhMuc}}</a>
+                            </div><!-- End .entry-cats -->
+
+                            <div class="entry-content editor-content">
+                                <div [innerHTML]="tinTuc?.noiDung">
+                                </div>
+                            </div><!-- End .entry-content -->
+
+                            <div class="entry-footer row no-gutters flex-column flex-md-row">
+                                <div class="col-md">
+
+                                </div>
+
+                                <div class="col-md-auto mt-2 mt-md-0">
+                                    <div class="social-icons social-icons-color">
+                                        <span class="social-label">Chia sẻ bài đăng này:</span>
+                                        <a href="javascript:void(0)" class="social-icon social-facebook"
+                                            title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
+                                        <a href="javascript:void(0)" class="social-icon social-twitter" title="Twitter"
+                                            target="_blank"><i class="icon-twitter"></i></a>
+                                        <a href="javascript:void(0)" class="social-icon social-pinterest"
+                                            title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
+                                        <a href="javascript:void(0)" class="social-icon social-linkedin"
+                                            title="Linkedin" target="_blank"><i class="icon-linkedin"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </article>
+
+                    <div class="comments">
+                        <h3 class="title">{{binhLuanTotal}} Bình luận</h3><!-- End .title -->
+
+                        <ul>
+                            <li *ngFor="let item of binhLuan">
+                                <div class="comment">
+                                    <figure *ngIf="!item.avatar" class="comment-media">
+                                        <a>
+                                            <img src="assets/User/user.png" alt="User name">
+                                        </a>
+                                    </figure>
+                                    <figure *ngIf="item.avatar" class="comment-media">
+                                        <a>
+                                            <img src="{{baseUrl}}/Uploads/Clients/{{item.avatar}}" alt="User name">
+                                        </a>
+                                    </figure>
+                                    <div class="comment-body">
+                                        <a class="comment-reply" style="cursor: pointer;"
+                                            (click)="toggleReplyVisibility(item.id)">Trả lời</a>
+
+                                        <div class="comment-user">
+                                            <h4><a>{{item.hoTen}}</a></h4>
+                                            <span class="comment-date">{{getTimeAgo(item.createdAt)}}</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            <p>{{item.noiDung}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul *ngIf="phanhoi">
+                                    <ng-container *ngFor="let ph of phanhoi">
+                                        <li *ngIf="item.id == ph.binhLuanId">
+                                            <div class="comment">
+                                                <figure *ngIf="!ph.avatarClient && !ph.avatar" class="comment-media">
+                                                    <a>
+                                                        <img src="assets/User/user.png" alt="User name">
+                                                    </a>
+                                                </figure>
+                                                <figure *ngIf="ph.avatarClient" class="comment-media">
+                                                    <a>
+                                                        <img src="{{baseUrl}}/Uploads/Clients/{{ph.avatarClient}}"
+                                                            alt="User name">
+                                                    </a>
+                                                </figure>
+                                                <figure *ngIf="ph.avatar" class="comment-media">
+                                                    <a>
+                                                        <img src="{{baseUrl}}/Uploads/Staffs/{{ph.avatar}}"
+                                                            alt="User name">
+                                                    </a>
+                                                </figure>
+                                                <div class="comment-body">
+                                                    <div class="comment-user">
+                                                        <h4><a href="javascript:void(0)">{{ph.hoTen}}</a></h4>
+                                                        <span class="comment-date">{{getTimeAgo(ph.createdAt)}}</span>
+                                                    </div>
+                                                    <div class="comment-content">
+                                                        <p>{{ph.noiDung}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ng-container>
+                                </ul>
+                                <ul *ngIf="replyVisibility[item.id]">
+                                    <li>
+                                        <div class="form_reply_wrap" *ngIf="replyVisibility[item.id]" #replyForm>
+                                            <div class="textarea-comment" style="width: calc(100% - 25px);">
+                                                <img src="assets/Profile/Shipper_CPS3.77d4065.png" width="90"
+                                                    alt="cps ant icon" class="cps-ant-cmt">
+                                                <textarea id="text-area-1446996" [(ngModel)]="response.noiDung"
+                                                    placeholder="Xin mời để lại câu hỏi, TechStore sẽ trả lời lại trong 1h, các câu hỏi sau 22h - 8h sẽ được trả lời vào sáng hôm sau"
+                                                    class="textarea">
+                                                </textarea>
+                                                <button class="button button__cmt-send" (click)="saveResponse()">
+                                                    <div class="icon-paper-plane"><svg height="15"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                            <path
+                                                                d="M511.6 36.86l-64 415.1c-1.5 9.734-7.375 18.22-15.97 23.05c-4.844 2.719-10.27 4.097-15.68 4.097c-4.188 0-8.319-.8154-12.29-2.472l-122.6-51.1l-50.86 76.29C226.3 508.5 219.8 512 212.8 512C201.3 512 192 502.7 192 491.2v-96.18c0-7.115 2.372-14.03 6.742-19.64L416 96l-293.7 264.3L19.69 317.5C8.438 312.8 .8125 302.2 .0625 289.1s5.469-23.72 16.06-29.77l448-255.1c10.69-6.109 23.88-5.547 34 1.406S513.5 24.72 511.6 36.86z">
+                                                            </path>
+                                                        </svg></div>
+                                                    Gửi
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="reply">
+                        <div class="heading">
+                            <h3 class="title">Để lại câu trả lời</h3>
+                            <p class="title-desc">Địa chỉ email của bạn sẽ không được công bố. Các trường bắt buộc được
+                                đánh dấu *
+                            </p>
+                        </div>
+
+                        <form action="#">
+                            <label for="reply-message" class="sr-only">Bình luận</label>
+                            <textarea name="reply-message" [(ngModel)]="comment.noiDung" id="reply-message" cols="30"
+                                rows="4" class="form-control" required placeholder="Bình luận *"></textarea>
+                            <button type="submit" (click)="saveComment()" class="btn btn-outline-primary-2">
+                                <span>Đăng</span>
+                                <i class="icon-long-arrow-right"></i>
+                            </button>
+                        </form>
+                    </div><!-- End .reply -->
+                </div><!-- End .col-lg-9 -->
+
+                <aside class="col-lg-3">
+                    <div class="sidebar">
+
+                        <div class="widget widget-cats">
+                            <h3 class="widget-title">Danh mục tin tức</h3><!-- End .widget-title -->
+
+                            <ul>
+                                <li *ngFor="let item of danhmuc">
+                                    <a
+                                        [routerLink]="['/blog', item.id]">{{item.tenTinTuc}}<span>{{item.countNew}}</span></a>
+                                </li>
+                            </ul>
+                        </div><!-- End .widget -->
+
+                        <div class="widget">
+                            <h3 class="widget-title">Tin tương tự</h3><!-- End .widget-title -->
+
+                            <ul class="posts-list">
+                                <li *ngFor="let item of tuongtu" class="d-flex">
+                                    <figure style="margin: auto;">
+                                        <a [routerLink]="['/blog-detail', item.id]">
+                                            <img src="{{baseUrl}}/Uploads/News/{{item.anhTinTuc}}" style="height:65px;"
+                                                alt="post">
+                                        </a>
+                                    </figure>
+
+                                    <div class="ml-3">
+                                        <span>{{item.createdAt | date: 'dd-mm-yyyy'}}</span>
+                                        <h4><a [routerLink]="['/blog-detail', item.id]">
+                                                {{ item.tieuDe.length > 50 ? (item.tieuDe | slice:0:50) + '...' :
+                                                item.tieuDe }}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>

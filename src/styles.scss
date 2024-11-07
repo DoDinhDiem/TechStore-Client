@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~primeicons/primeicons.css';
+@import 'primeng/resources/themes/lara-light-blue/theme.css';
+@media (min-width: 1200px) {
+    .custom-col-5 {
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+}
+.p-toast {
+    position: fixed;
+    width: 30rem !important;
+    font-size: 15px;
+}

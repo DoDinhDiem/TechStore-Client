@@ -1,0 +1,65 @@
+<div class="mb-1"></div>
+<nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+    <div class="container breadcrumb-container">
+        <div class="breadcrumb">
+            <li class="breadcrumb-item"><a [routerLink]="['/']">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Đăng nhập</li>
+        </div>
+    </div>
+</nav>
+
+<div class="login-page mt-3">
+    <div class="container">
+        <div class="form-box" style="box-shadow: 0 1px 2px 0 rgba(60,64,67,.1), 0 2px 6px 2px rgba(60,64,67,.15);">
+            <div class="form-tab">
+                <ul class="nav nav-pills nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="signin-tab-2" data-toggle="tab" href="#signin-2" role="tab"
+                            aria-controls="signin-2" aria-selected="true">Đăng nhập</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
+                        <form action="#">
+                            <div class="form-group">
+                                <label for="singin-email-2">Email *</label>
+                                <input type="email" class="form-control" name="accountEmail" [(ngModel)]="account.email"
+                                    required autocomplete="off">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="singin-password-2">Mật khẩu *</label>
+                                <div class="password-container">
+                                    <input [type]="passwordType" class="form-control" name="accountPass"
+                                        [(ngModel)]="account.passWord" required autocomplete="off">
+                                    <span class="password-toggle" (click)="togglePasswordVisibility()">
+                                        <i class="pi"
+                                            [ngClass]="{'pi-eye': passwordType === 'password', 'pi-eye-slash': passwordType === 'text'}"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-footer">
+                                <button type="submit" (click)="singIn()" class="btn btn-outline-primary-2">
+                                    <span>Đăng nhập</span>
+                                    <i class="icon-long-arrow-right"></i>
+                                </button>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="signin-remember-2">
+                                    <label class="custom-control-label" for="signin-remember-2">Nhớ</label>
+                                </div>
+
+                                <a [routerLink]="['/forgotpass']" class="forgot-link">Quên mật khẩu?</a>
+                            </div>
+                            <div class="text-center">
+                                <p>Bạn chưa có tài khoản? <a [routerLink]="['/signup']">Đăng ký</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>
